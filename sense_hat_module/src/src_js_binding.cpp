@@ -21,142 +21,6 @@
 #include "jerryscript.h"
 #include "src_js_binding.h"
 
-RTIMUSettings* settings_ = new RTIMUSettings();
-
-void RTHumidity_js_destructor(void* ptr) { }
-
-static const jerry_object_native_info_t RTHumidity_type_info = {
-    .free_cb = RTHumidity_js_destructor
-};
-
-static const jerry_object_native_info_t RTHumidity_type_info_static = {
-  .free_cb = NULL
-};
-
-
-bool jerry_value_is_RTHumidity (jerry_value_t jval)
-{
-  if (!jerry_value_is_object (jval))
-  {
-    return false;
-  }
-
-  void* ptr;
-  const jerry_object_native_info_t* type_ptr;
-  bool has_ptr = jerry_get_object_native_pointer(jval, &ptr, type_ptr);
-
-  if (!has_ptr ||
-      (type_ptr != &RTHumidity_type_info && type_ptr != &RTHumidity_type_info_static))
-  {
-    return false;
-  }
-
-  return true;
-}
-
-
-jerry_value_t RTHumidity_js_creator (RTHumidity* native_ptr)
-{
-  jerry_value_t js_obj = jerry_create_object();
-
-  return js_obj;
-}
-
-
-// external function for record constructor
-jerry_value_t RTHumidity_js_constructor (const jerry_value_t function_obj,
-                                             const jerry_value_t this_val,
-                                             const jerry_value_t args_p[],
-                                             const jerry_length_t args_cnt)
-{
-  RTHumidity* native_ptr;
-  switch (args_cnt) {
-
-    case 0: {
-      native_ptr = RTHumidity::createHumidity(settings_);
-      native_ptr->humidityInit();
-      break;
-    }
-
-     default: {
-       char const *msg = "Wrong argument count for RTHumidity constructor.";
-       return jerry_create_error (JERRY_ERROR_TYPE, (const jerry_char_t*)msg);
-     }
-  }
-
-  jerry_value_t ret_val = RTHumidity_js_creator(native_ptr);
-  jerry_set_object_native_pointer(ret_val, native_ptr, &RTHumidity_type_info);
-  return ret_val;
-}
-
-
-void RTPressure_js_destructor(void* ptr) { }
-
-static const jerry_object_native_info_t RTPressure_type_info = {
-    .free_cb = RTPressure_js_destructor
-};
-
-static const jerry_object_native_info_t RTPressure_type_info_static = {
-  .free_cb = NULL
-};
-
-
-bool jerry_value_is_RTPressure (jerry_value_t jval)
-{
-  if (!jerry_value_is_object (jval))
-  {
-    return false;
-  }
-
-  void* ptr;
-  const jerry_object_native_info_t* type_ptr;
-  bool has_ptr = jerry_get_object_native_pointer(jval, &ptr, type_ptr);
-
-  if (!has_ptr ||
-      (type_ptr != &RTPressure_type_info && type_ptr != &RTPressure_type_info_static))
-  {
-    return false;
-  }
-
-  return true;
-}
-
-
-jerry_value_t RTPressure_js_creator (RTPressure* native_ptr)
-{
-  jerry_value_t js_obj = jerry_create_object();
-
-  return js_obj;
-}
-
-
-// external function for record constructor
-jerry_value_t RTPressure_js_constructor (const jerry_value_t function_obj,
-                                         const jerry_value_t this_val,
-                                         const jerry_value_t args_p[],
-                                         const jerry_length_t args_cnt)
-{
-  RTPressure* native_ptr;
-  switch (args_cnt) {
-
-    case 0: {
-      native_ptr = RTPressure::createPressure(settings_);
-      native_ptr->pressureInit();
-      break;
-    }
-
-     default: {
-       char const *msg = "Wrong argument count for RTPressure constructor.";
-       return jerry_create_error (JERRY_ERROR_TYPE, (const jerry_char_t*)msg);
-     }
-  }
-
-  jerry_value_t ret_val = RTPressure_js_creator(native_ptr);
-  jerry_set_object_native_pointer(ret_val, native_ptr, &RTPressure_type_info);
-  return ret_val;
-}
-
-
 void SenseHAT_js_destructor(void* ptr) { }
 
 static const jerry_object_native_info_t SenseHAT_type_info = {
@@ -168,27 +32,6 @@ static const jerry_object_native_info_t SenseHAT_type_info_static = {
 };
 
 
-bool jerry_value_is_SenseHAT (jerry_value_t jval)
-{
-  if (!jerry_value_is_object (jval))
-  {
-    return false;
-  }
-
-  void* ptr;
-  const jerry_object_native_info_t* type_ptr;
-  bool has_ptr = jerry_get_object_native_pointer(jval, &ptr, type_ptr);
-
-  if (!has_ptr ||
-      (type_ptr != &SenseHAT_type_info && type_ptr != &SenseHAT_type_info_static))
-  {
-    return false;
-  }
-
-  return true;
-}
-
-
 // external function for record method
 jerry_value_t SenseHAT_set_pixel_handler (const jerry_value_t function_obj,
                                           const jerry_value_t this_val,
@@ -196,11 +39,9 @@ jerry_value_t SenseHAT_set_pixel_handler (const jerry_value_t function_obj,
                                           const jerry_length_t args_cnt)
 {
   void* void_ptr;
-  const jerry_object_native_info_t* type_ptr;
-  bool has_ptr = jerry_get_object_native_pointer(this_val, &void_ptr, type_ptr);
+  bool has_ptr = jerry_get_object_native_pointer(this_val, &void_ptr, &SenseHAT_type_info);
 
-  if (!has_ptr ||
-      (type_ptr != &SenseHAT_type_info && type_ptr != &SenseHAT_type_info_static)) {
+  if (!has_ptr) {
     char const *msg = "Failed to get native SenseHAT pointer";
     return jerry_create_error(JERRY_ERROR_TYPE, (const jerry_char_t *)msg);
   }
@@ -259,10 +100,9 @@ jerry_value_t SenseHAT_get_temperature_from_humidity_handler (const jerry_value_
                                                               const jerry_length_t args_cnt)
 {
   void* void_ptr;
-  const jerry_object_native_info_t* type_ptr;
   bool has_ptr = jerry_get_object_native_pointer(this_val, &void_ptr, &SenseHAT_type_info);
 
-  if (!has_ptr) { // || (type_ptr != &SenseHAT_type_info && type_ptr != &SenseHAT_type_info_static)) {
+  if (!has_ptr) {
     char const *msg = "Failed to get native SenseHAT pointer";
     return jerry_create_error(JERRY_ERROR_TYPE, (const jerry_char_t *)msg);
   }
@@ -274,7 +114,6 @@ jerry_value_t SenseHAT_get_temperature_from_humidity_handler (const jerry_value_
 
     case 0: {
       result = native_ptr->get_temperature_from_humidity();
-      fprintf(stderr, "Humidty native: %f\n", result);
       break;
     }
 
@@ -283,7 +122,6 @@ jerry_value_t SenseHAT_get_temperature_from_humidity_handler (const jerry_value_
       return jerry_create_error (JERRY_ERROR_TYPE, (const jerry_char_t*)msg);
     }
   }
-
 
   jerry_value_t ret_val = jerry_create_number (result);
 
@@ -298,13 +136,9 @@ jerry_value_t SenseHAT_get_humidity_handler (const jerry_value_t function_obj,
                                              const jerry_length_t args_cnt)
 {
   void* void_ptr;
-  const jerry_object_native_info_t* type_ptr;
-  // bool has_ptr = jerry_get_object_native_pointer(this_val, &void_ptr, type_ptr);
   bool has_ptr = jerry_get_object_native_pointer(this_val, &void_ptr, &SenseHAT_type_info);
 
-
-  if (!has_ptr ||
-      (type_ptr != &SenseHAT_type_info && type_ptr != &SenseHAT_type_info_static)) {
+  if (!has_ptr) {
     char const *msg = "Failed to get native SenseHAT pointer";
     return jerry_create_error(JERRY_ERROR_TYPE, (const jerry_char_t *)msg);
   }
@@ -313,7 +147,6 @@ jerry_value_t SenseHAT_get_humidity_handler (const jerry_value_t function_obj,
 
   double result;
   switch (args_cnt) {
-
     case 0: {
       result = native_ptr->get_humidity();
       break;
@@ -324,7 +157,6 @@ jerry_value_t SenseHAT_get_humidity_handler (const jerry_value_t function_obj,
       return jerry_create_error (JERRY_ERROR_TYPE, (const jerry_char_t*)msg);
     }
   }
-
 
   jerry_value_t ret_val = jerry_create_number (result);
 
@@ -339,11 +171,9 @@ jerry_value_t SenseHAT_get_pressure_handler (const jerry_value_t function_obj,
                                              const jerry_length_t args_cnt)
 {
   void* void_ptr;
-  const jerry_object_native_info_t* type_ptr;
-  bool has_ptr = jerry_get_object_native_pointer(this_val, &void_ptr, type_ptr);
+  bool has_ptr = jerry_get_object_native_pointer(this_val, &void_ptr, &SenseHAT_type_info);
 
-  if (!has_ptr ||
-      (type_ptr != &SenseHAT_type_info && type_ptr != &SenseHAT_type_info_static)) {
+  if (!has_ptr) {
     char const *msg = "Failed to get native SenseHAT pointer";
     return jerry_create_error(JERRY_ERROR_TYPE, (const jerry_char_t *)msg);
   }
@@ -352,7 +182,6 @@ jerry_value_t SenseHAT_get_pressure_handler (const jerry_value_t function_obj,
 
   double result;
   switch (args_cnt) {
-
     case 0: {
       result = native_ptr->get_pressure();
       break;
@@ -363,7 +192,6 @@ jerry_value_t SenseHAT_get_pressure_handler (const jerry_value_t function_obj,
       return jerry_create_error (JERRY_ERROR_TYPE, (const jerry_char_t*)msg);
     }
   }
-
 
   jerry_value_t ret_val = jerry_create_number (result);
 
@@ -456,11 +284,9 @@ jerry_value_t SenseHAT_get_temperature_from_pressure_handler (const jerry_value_
                                              const jerry_length_t args_cnt)
 {
   void* void_ptr;
-  const jerry_object_native_info_t* type_ptr;
-  bool has_ptr = jerry_get_object_native_pointer(this_val, &void_ptr, type_ptr);
+  bool has_ptr = jerry_get_object_native_pointer(this_val, &void_ptr, &SenseHAT_type_info);
 
-  if (!has_ptr ||
-      (type_ptr != &SenseHAT_type_info && type_ptr != &SenseHAT_type_info_static)) {
+  if (!has_ptr) {
     char const *msg = "Failed to get native SenseHAT pointer";
     return jerry_create_error(JERRY_ERROR_TYPE, (const jerry_char_t *)msg);
   }
@@ -469,7 +295,6 @@ jerry_value_t SenseHAT_get_temperature_from_pressure_handler (const jerry_value_
 
   double result;
   switch (args_cnt) {
-
     case 0: {
       result = native_ptr->get_temperature_from_pressure();
       break;
@@ -480,7 +305,6 @@ jerry_value_t SenseHAT_get_temperature_from_pressure_handler (const jerry_value_
       return jerry_create_error (JERRY_ERROR_TYPE, (const jerry_char_t*)msg);
     }
   }
-
 
   jerry_value_t ret_val = jerry_create_number (result);
 
@@ -588,25 +412,6 @@ jerry_value_t SenseHAT_js_constructor (const jerry_value_t function_obj,
 extern "C" jerry_value_t Init_src()
 {
   jerry_value_t object = jerry_create_object();
-
-
-  // set a constructor as a property to the module object
-  jerry_value_t RTHumidity_name = jerry_create_string ((const jerry_char_t*)"RTHumidity");
-  jerry_value_t RTHumidity_func = jerry_create_external_function (RTHumidity_js_constructor);
-  jerry_value_t RTHumidity_ret = jerry_set_property (object, RTHumidity_name, RTHumidity_func);
-  jerry_release_value (RTHumidity_name);
-  jerry_release_value (RTHumidity_func);
-  jerry_release_value (RTHumidity_ret);
-
-
-  // set a constructor as a property to the module object
-  jerry_value_t RTPressure_name = jerry_create_string ((const jerry_char_t*)"RTPressure");
-  jerry_value_t RTPressure_func = jerry_create_external_function (RTPressure_js_constructor);
-  jerry_value_t RTPressure_ret = jerry_set_property (object, RTPressure_name, RTPressure_func);
-  jerry_release_value (RTPressure_name);
-  jerry_release_value (RTPressure_func);
-  jerry_release_value (RTPressure_ret);
-
 
   // set a constructor as a property to the module object
   jerry_value_t SenseHAT_name = jerry_create_string ((const jerry_char_t*)"SenseHAT");
