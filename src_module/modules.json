@@ -1,0 +1,10 @@
+
+{
+  "modules": {
+    "src_module": {
+      "native_files": [],
+      "init": "Init_src",
+      "cmakefile": "module.cmake"
+    }
+  }
+}
