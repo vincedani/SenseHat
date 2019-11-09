@@ -21,7 +21,7 @@ static const char SENSE_HAT_FB_NAME[] = "RPi-Sense FB";
 
 SenseHAT::SenseHAT() : fbfd(-1)
 {
-  RTIMUSettings* settings = new RTIMUSettings();
+  RTIMUSettings *settings = new RTIMUSettings();
 
   humidity = RTHumidity::createHumidity(settings);
   humidity->humidityInit();
@@ -38,14 +38,15 @@ static uint16_t pack_pixel(uint8_t r, uint8_t g, uint8_t b)
   return (r16 << 11) + (g16 << 5) + b16;
 }
 
-static void sense_hat_rstrip(char* s)
+static void sense_hat_rstrip(char *s)
 {
   size_t l = strlen(s);
   if (l == 0)
     return;
 
-  char* end = s + l - 1;
-  while(end >= s && isspace(*end)) {
+  char *end = s + l - 1;
+  while (end >= s && isspace(*end))
+  {
     end--;
   }
 
@@ -57,36 +58,40 @@ int SenseHAT::init_fb()
   if (fbfd != -1)
     return 0;
 
-  DIR* d = opendir("/sys/class/graphics");
+  DIR *d = opendir("/sys/class/graphics");
   if (d == NULL)
     return errno;
 
-  struct dirent* dent = (struct dirent*)malloc(offsetof(struct dirent, d_name) + NAME_MAX + 1);
-  struct dirent* dentp;
+  struct dirent *dent = (struct dirent *)malloc(offsetof(struct dirent, d_name) + NAME_MAX + 1);
+  struct dirent *dentp;
 
-  while(true) {
+  while (true)
+  {
     int rc = readdir_r(d, dent, &dentp);
     if (rc == 0 && dentp == NULL)
       rc = ENOENT;
 
-    if (rc != 0) {
+    if (rc != 0)
+    {
       free(dent);
       closedir(d);
       return rc;
     }
 
-    if (strncmp("fb", dent->d_name, 2) == 0) {
+    if (strncmp("fb", dent->d_name, 2) == 0)
+    {
       char path[PATH_MAX];
       snprintf(path, PATH_MAX, "/sys/class/graphics/%s/name", dent->d_name);
 
-      FILE* f = fopen(path, "r");
+      FILE *f = fopen(path, "r");
       if (f == NULL)
         continue;
 
       char name[1024];
       fgets(name, sizeof(name), f);
       sense_hat_rstrip(name);
-      if (strcmp(name, SENSE_HAT_FB_NAME) == 0) {
+      if (strcmp(name, SENSE_HAT_FB_NAME) == 0)
+      {
         snprintf(path, PATH_MAX, "/dev/%s", dent->d_name);
         fbfd = open(path, O_RDWR);
 
@@ -124,7 +129,7 @@ int SenseHAT::set_pixel(int x, int y, uint8_t r, uint8_t g, uint8_t b)
     return rc;
 
   uint16_t p = pack_pixel(r, g, b);
-  if (pwrite(fbfd, &p, 2, (x + y*8)*2) != 2)
+  if (pwrite(fbfd, &p, 2, (x + y * 8) * 2) != 2)
     return errno;
 
   return 0;

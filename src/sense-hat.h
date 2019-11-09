@@ -3,7 +3,8 @@
 class RTHumidity;
 class RTPressure;
 
-class SenseHAT {
+class SenseHAT
+{
 public:
   SenseHAT();
 
@@ -23,6 +24,6 @@ private:
 
   int init_fb();
 
-  RTHumidity* humidity;
-  RTPressure* pressure;
+  RTHumidity *humidity;
+  RTPressure *pressure;
 };
