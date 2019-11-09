@@ -1,0 +1,10 @@
+
+{
+  "modules": {
+    "sense_hat_module": {
+      "native_files": [],
+      "init": "Init_src",
+      "cmakefile": "module.cmake"
+    }
+  }
+}
