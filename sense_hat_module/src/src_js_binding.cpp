@@ -210,11 +210,9 @@ jerry_value_t SenseHAT_blank_handler(const jerry_value_t function_obj,
                                      const jerry_length_t args_cnt)
 {
   void *void_ptr;
-  const jerry_object_native_info_t *type_ptr;
-  bool has_ptr = jerry_get_object_native_pointer(this_val, &void_ptr, type_ptr);
+  bool has_ptr = jerry_get_object_native_pointer(this_val, &void_ptr, &SenseHAT_type_info);
 
-  if (!has_ptr ||
-      (type_ptr != &SenseHAT_type_info && type_ptr != &SenseHAT_type_info_static))
+  if (!has_ptr)
   {
     char const *msg = "Failed to get native SenseHAT pointer";
     return jerry_create_error(JERRY_ERROR_TYPE, (const jerry_char_t *)msg);
@@ -250,11 +248,9 @@ jerry_value_t SenseHAT_get_temperature_handler(const jerry_value_t function_obj,
                                                const jerry_length_t args_cnt)
 {
   void *void_ptr;
-  const jerry_object_native_info_t *type_ptr;
-  bool has_ptr = jerry_get_object_native_pointer(this_val, &void_ptr, type_ptr);
+  bool has_ptr = jerry_get_object_native_pointer(this_val, &void_ptr, &SenseHAT_type_info);
 
-  if (!has_ptr ||
-      (type_ptr != &SenseHAT_type_info && type_ptr != &SenseHAT_type_info_static))
+  if (!has_ptr)
   {
     char const *msg = "Failed to get native SenseHAT pointer";
     return jerry_create_error(JERRY_ERROR_TYPE, (const jerry_char_t *)msg);
